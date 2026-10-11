@@ -3,7 +3,7 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-const BASE_URL = "http://localhost:5000"
+const BASE_URL = process.env.BASE_URL || "http://localhost:5000"
 
 async function runValidationSuite() {
   console.log("==========================================================")
@@ -730,6 +730,11 @@ async function runValidationSuite() {
   console.log("\n==========================================================")
   console.log(`  TEST RESULTS SUMMARY: ${passedCount} / ${totalCount} PASSED`)
   console.log("==========================================================\n")
+
+  if (passedCount < totalCount || !petsIntact || !adminUser) {
+    console.error(`\nTest suite failed: ${totalCount - passedCount} test(s) failed or database integrity check failed.`)
+    process.exit(1)
+  }
 
   return { testResults, passedCount, totalCount, petsIntact, adminIntact: !!adminUser }
 }

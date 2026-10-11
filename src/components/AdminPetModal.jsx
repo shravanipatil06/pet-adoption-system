@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 function AdminPetModal({ isOpen, onClose, petToEdit, onSave }) {
   const [name, setName] = useState("")
@@ -10,7 +10,12 @@ function AdminPetModal({ isOpen, onClose, petToEdit, onSave }) {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState("")
 
-  useEffect(() => {
+  const [prevPet, setPrevPet] = useState(petToEdit)
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
+
+  if (petToEdit !== prevPet || isOpen !== prevIsOpen) {
+    setPrevPet(petToEdit)
+    setPrevIsOpen(isOpen)
     if (petToEdit) {
       setName(petToEdit.name || "")
       setBreed(petToEdit.breed || "")
@@ -27,7 +32,7 @@ function AdminPetModal({ isOpen, onClose, petToEdit, onSave }) {
       setImage("https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&q=80")
     }
     setError("")
-  }, [petToEdit, isOpen])
+  }
 
   if (!isOpen) return null
 

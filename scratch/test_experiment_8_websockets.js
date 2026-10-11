@@ -1,6 +1,6 @@
 import { io } from "socket.io-client"
 
-const BASE_URL = "http://localhost:5000"
+const BASE_URL = process.env.BASE_URL || "http://localhost:5000"
 
 async function runExp8Tests() {
   console.log("==================================================================")

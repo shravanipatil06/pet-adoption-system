@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useContext } from "react"
 import { AuthContext } from "../context/AuthContext"
 
 function AdoptionApplicationModal({ isOpen, onClose, pet, onSubmit, onOpenAuthModal }) {
@@ -12,7 +12,10 @@ function AdoptionApplicationModal({ isOpen, onClose, pet, onSubmit, onOpenAuthMo
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState("")
 
-  useEffect(() => {
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
+
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen)
     if (isOpen) {
       setPhone("")
       setAddress("")
@@ -21,7 +24,7 @@ function AdoptionApplicationModal({ isOpen, onClose, pet, onSubmit, onOpenAuthMo
       setLivingSituation("")
       setError("")
     }
-  }, [isOpen])
+  }
 
   if (!isOpen || !pet) return null
 

@@ -29,8 +29,36 @@ function usePets() {
   }, [])
 
   useEffect(() => {
-    fetchPets()
-  }, [fetchPets])
+    let ignore = false
+
+    const loadPets = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/pets`)
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+        const data = await response.json()
+        const petList = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : null)
+        if (!ignore && petList && petList.length > 0) {
+          setPets(petList)
+        }
+      } catch (error) {
+        console.warn(
+          "Backend REST API unavailable. Using fallback pet data from src/data/pets.js:",
+          error.message
+        )
+      } finally {
+        if (!ignore) {
+          setLoading(false)
+        }
+      }
+    }
+
+    loadPets()
+    return () => {
+      ignore = true
+    }
+  }, [])
 
   // Create pet (Admin only)
   const createPet = async (petData, token) => {

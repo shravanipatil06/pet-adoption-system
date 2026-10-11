@@ -62,14 +62,14 @@ export const initSocket = (httpServer) => {
       }
 
       return next()
-    } catch (err) {
+    } catch {
       return next(new Error("Authentication error: Invalid or expired token"))
     }
   })
 
   // Connection Handler
   ioInstance.on("connection", (socket) => {
-    const { _id, role, name } = socket.user
+    const { _id, role } = socket.user
 
     // Join private room dedicated to this authenticated user
     socket.join(`user:${_id}`)
@@ -79,7 +79,7 @@ export const initSocket = (httpServer) => {
       socket.join("admin_room")
     }
 
-    socket.on("disconnect", (reason) => {
+    socket.on("disconnect", (_reason) => {
       // Clean disconnection handling without leaking tokens or credentials
     })
 

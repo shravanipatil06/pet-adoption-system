@@ -1,0 +1,83 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-build:
+    name: Test and Build
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NODE_ENV: test
+      PORT: 5000
+      MONGO_URI: mongodb://localhost:27017/pethaven_ci
+      JWT_SECRET: ci_test_jwt_secret_key_random_for_github_actions_pipeline_2026
+      CLIENT_URL: http://localhost:5173
+      BASE_URL: http://localhost:5000
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Seed test admin and baseline pets
+        run: node scratch/seed_admin.js
+
+      - name: Start backend server in background
+        run: |
+          node server/server.js &
+          echo "SERVER_PID=$!" >> $GITHUB_ENV
+
+      - name: Wait for backend health check
+        run: |
+          timeout=30
+          until curl -s http://localhost:5000/ | grep -q '"success":true'; do
+            if [ $timeout -le 0 ]; then
+              echo "Backend server failed to start within timeout"
+              exit 1
+            fi
+            echo "Waiting for backend to be ready... ($timeout s remaining)"
+            sleep 2
+            timeout=$((timeout - 2))
+          done
+          echo "Backend server is healthy and responding!"
+
+      - name: Run Experiment 7 REST API validation suite
+        run: node scratch/validate_exp7_suite.js
+
+      - name: Run Experiment 8 WebSocket real-time test suite
+        run: node scratch/test_experiment_8_websockets.js
+
+      - name: Build frontend application
+        run: npm run build
+
+      - name: Clean up background server process
+        if: always()
+        run: |
+          if [ -n "$SERVER_PID" ]; then
+            echo "Stopping backend server process ($SERVER_PID)..."
+            kill "$SERVER_PID" 2>/dev/null || true
+          fi

@@ -33,7 +33,7 @@ function App() {
   const { lastEvent } = useContext(SocketContext)
 
   // Custom Hooks
-  const { pets, loading: petsLoading, createPet, updatePet, deletePet } = usePets()
+  const { pets, createPet, updatePet, deletePet } = usePets()
   const {
     myApplications,
     allApplications,

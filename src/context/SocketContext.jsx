@@ -20,6 +20,18 @@ export const SocketProvider = ({ children }) => {
     }, 6000)
   }, [])
 
+  const isAuthCurrent = Boolean(isAuthenticated && token)
+  const [prevAuth, setPrevAuth] = useState(isAuthCurrent)
+
+  if (isAuthCurrent !== prevAuth) {
+    setPrevAuth(isAuthCurrent)
+    if (!isAuthCurrent) {
+      setIsConnected(false)
+      setNotifications([])
+      setActiveToast(null)
+    }
+  }
+
   useEffect(() => {
     // If user is not authenticated or token is absent, ensure socket is disconnected cleanly
     if (!isAuthenticated || !token) {
@@ -27,9 +39,6 @@ export const SocketProvider = ({ children }) => {
         socketRef.current.disconnect()
         socketRef.current = null
       }
-      setIsConnected(false)
-      setNotifications([])
-      setActiveToast(null)
       return
     }
 

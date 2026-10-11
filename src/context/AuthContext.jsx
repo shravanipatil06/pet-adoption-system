@@ -9,6 +9,15 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  // User logout
+  const logout = () => {
+    setUser(null)
+    setToken(null)
+    setError(null)
+    localStorage.removeItem("pethaven_token")
+    localStorage.removeItem("pethaven_user")
+  }
+
   // Load user & token from localStorage on initial render
   useEffect(() => {
     const initializeAuth = async () => {
@@ -111,15 +120,6 @@ export const AuthProvider = ({ children }) => {
       setError(msg)
       return { success: false, message: msg }
     }
-  }
-
-  // User logout
-  const logout = () => {
-    setUser(null)
-    setToken(null)
-    setError(null)
-    localStorage.removeItem("pethaven_token")
-    localStorage.removeItem("pethaven_user")
   }
 
   const value = {
