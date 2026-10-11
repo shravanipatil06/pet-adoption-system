@@ -1,0 +1,509 @@
+{
+  "info": {
+    "_postman_id": "pet-haven-exp7-collection-id",
+    "name": "Pet Haven — Experiment 7 API Validation",
+    "description": "Postman Test & Validation Collection for Pet Haven RESTful APIs (Experiment 7)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. General & Health",
+      "item": [
+        {
+          "name": "Health Check Endpoint",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Authentication APIs",
+      "item": [
+        {
+          "name": "Register Normal User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Exp7 Test User\",\n  \"email\": \"exp7user@pethaven.com\",\n  \"password\": \"User@12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User Login (Obtain JWT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"exp7user@pethaven.com\",\n  \"password\": \"User@12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Login (Obtain Admin JWT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin_demo@pethaven.com\",\n  \"password\": \"Admin@12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Authenticated User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Incorrect Password Failure",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"exp7user@pethaven.com\",\n  \"password\": \"WrongPassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Non-existent Email Failure",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nonexistent@pethaven.com\",\n  \"password\": \"User@12345\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Pets APIs",
+      "item": [
+        {
+          "name": "Get All Pets (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pets",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Pet by ID (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pets/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pets", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Temporary Pet (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 99,\n  \"name\": \"Exp7 Temp Pet\",\n  \"breed\": \"Test Retriever\",\n  \"age\": 1,\n  \"gender\": \"Male\",\n  \"type\": \"Dog\",\n  \"image\": \"https://images.unsplash.com/photo-1552053831-71594a27632d\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pets",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Temporary Pet (Admin Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Exp7 Temp Pet Updated\",\n  \"age\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pets/99",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pets", "99"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Temporary Pet (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pets/99",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pets", "99"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Adoption APIs",
+      "item": [
+        {
+          "name": "Submit Adoption Application (User Auth)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"petId\": 1,\n  \"phone\": \"+1-555-0199\",\n  \"address\": \"123 Validation Way, Suite 404\",\n  \"reasonForAdoption\": \"Testing adoption workflow via Postman\",\n  \"previousPetExperience\": \"5 years with dogs\",\n  \"livingSituation\": \"Spacious home with fenced yard\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/adoptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adoptions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Prevent Duplicate Pending Application",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"petId\": 1,\n  \"phone\": \"+1-555-0199\",\n  \"address\": \"123 Validation Way, Suite 404\",\n  \"reasonForAdoption\": \"Duplicate attempt\",\n  \"previousPetExperience\": \"5 years with dogs\",\n  \"livingSituation\": \"Spacious home with fenced yard\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/adoptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adoptions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User's Own Adoption Applications",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adoptions/my",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adoptions", "my"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Application Details by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adoptions/{{tempAppId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adoptions", "{{tempAppId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Applications (Admin Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adoptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adoptions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Adoption Application (Admin Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adoptions/{{tempAppId}}/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adoptions", "{{tempAppId}}", "approve"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Adoption Application (Admin Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adoptions/{{tempAppId}}/reject",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adoptions", "{{tempAppId}}", "reject"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Adoption Application (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adoptions/{{tempAppId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adoptions", "{{tempAppId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Authorization & Security Testing",
+      "item": [
+        {
+          "name": "Missing JWT Token (401 Unauthorized)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid JWT Token (401 Unauthorized)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer invalid_token_xyz_123" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Normal User Attempting Admin Pet Creation (403 Forbidden)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Unauthorized Pet\",\n  \"breed\": \"Poodle\",\n  \"age\": 1,\n  \"gender\": \"Male\",\n  \"type\": \"Dog\",\n  \"image\": \"https://images.unsplash.com/photo-1552053831-71594a27632d\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pets",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Normal User Attempting All Applications Fetch (403 Forbidden)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/adoptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adoptions"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Validation & Error Handling Testing",
+      "item": [
+        {
+          "name": "Register Validation Error - Missing Fields (400 Bad Request)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"invalid_register@pethaven.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pet Validation Error - Invalid Gender & Type (400 Bad Request)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bad Pet\",\n  \"breed\": \"Mix\",\n  \"age\": -5,\n  \"gender\": \"Unknown\",\n  \"type\": \"Dragon\",\n  \"image\": \"http://example.com/img.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pets",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Adoption Validation Error - Missing Fields (400 Bad Request)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{userToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"petId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/adoptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "adoptions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Non-existent Pet (404 Not Found)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pets/99999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "pets", "99999"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
