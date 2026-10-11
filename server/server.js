@@ -18,6 +18,10 @@ connectDB()
 
 const app = express()
 
+// Trust reverse proxy (Render sits behind 1 reverse proxy hop)
+// Resolves real client IP for rate limiting and prevents ERR_ERL_UNEXPECTED_X_FORWARDED_FOR
+app.set("trust proxy", 1)
+
 // Security HTTP Headers
 app.use(
   helmet({
