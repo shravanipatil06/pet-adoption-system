@@ -19,22 +19,36 @@ connectDB()
 const app = express()
 
 // Security HTTP Headers
-app.use(helmet())
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+)
 
 // Basic rate limiting for API endpoints
 app.use("/api", apiLimiter)
 
 // CORS Configuration
-const allowedOrigins = [
-  ...(process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",").map((s) => s.trim()) : []),
+const defaultOrigins = [
+  "https://pet-adoption-system-eta.vercel.app",
   "http://localhost:5173",
   "http://localhost:5174",
 ]
+
+const clientUrlOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(",")
+      .map((s) => s.trim().replace(/\/+$/, ""))
+      .filter(Boolean)
+  : []
+
+const allowedOrigins = Array.from(new Set([...defaultOrigins, ...clientUrlOrigins]))
 
 app.use(
   cors({
     origin: allowedOrigins,
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 )
 

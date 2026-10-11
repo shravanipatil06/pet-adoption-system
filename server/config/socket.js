@@ -9,11 +9,19 @@ let ioInstance = null
  * @param {import('http').Server} httpServer
  */
 export const initSocket = (httpServer) => {
-  const allowedOrigins = [
-    ...(process.env.CLIENT_URL ? process.env.CLIENT_URL.split(",").map((s) => s.trim()) : []),
+  const defaultOrigins = [
+    "https://pet-adoption-system-eta.vercel.app",
     "http://localhost:5173",
     "http://localhost:5174",
   ]
+
+  const clientUrlOrigins = process.env.CLIENT_URL
+    ? process.env.CLIENT_URL.split(",")
+        .map((s) => s.trim().replace(/\/+$/, ""))
+        .filter(Boolean)
+    : []
+
+  const allowedOrigins = Array.from(new Set([...defaultOrigins, ...clientUrlOrigins]))
 
   ioInstance = new Server(httpServer, {
     cors: {
